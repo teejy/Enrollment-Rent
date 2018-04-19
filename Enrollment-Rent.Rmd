@@ -1,0 +1,97 @@
+---
+title: "Housing Project"
+output: html_document
+---
+Research Motivation: 
+
+Four-year public colleges in response to decreases in per student expenditures have turned to using student tuition asa primary funding mechanism. Universities are enrolling more students with higher tuition in order to increase revenue. But, colleges in general have so far been unable to build university housing at an equal rate to enrollment increases. At the University of California Berkeley, there are over 21,000 students seeking off campus housing, a 48% increase from 1999.
+
+Berkeley California's estimated population is 121,240 according to the most recent United States census.
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)    #our old friend
+library(ggplot2)
+library(reshape)
+library(lubridate)
+```
+
+```{r}
+my.file.rename <- function(from, to) {
+    todir <- dirname(to)
+    if (!isTRUE(file.info(todir)$isdir)) dir.create(todir, recursive=TRUE)
+    file.rename(from = from,  to = to)
+}
+```
+
+```{r}
+library(readxl)
+enrollment <- read_excel("~/Documents/Berkeley/Senior Research Project/Berkeley Enrollment Data and Houing.xlsx")
+```
+
+Data from Berkeley's Common Dataset
+```{r}
+df<-enrollment%>%
+  filter(`Year (Fall)`>=1999)%>%
+  mutate(num_off=`Total Enrollment Undergrad`- `Campus Housed Students`)
+df
+```
+
+Graph of total enrollment
+```{r}
+df%>%
+  ggplot(aes(x=`Year (Fall)`,y=`Total Enrollment (with grads)`))+geom_line()
+```
+
+Graph of Number of Students living off campus
+```{r}
+df%>%
+  ggplot(aes(x=`Year (Fall)`,y=num_off))+geom_point()
+```
+
+Ideas for developing a relationship:
+1) 94704 is a heavily student impacted zipcode, so enrollment increases would have a larger impact on rents here than other parts of the city.
+2) Relatively large changes in housed students occurs when dorms are built.
+3) Summer sublets are a pretty good signifier of what is college housing. Scraping craigslist or facebook groups could provide data on college housing.
+4) In 2014 there's a pretty clear discontinuity in enrollment.
+
+Ways to use regression discontinuity:
+
+Ways to use diff in diff:
+
+Literature Review:
+
+Rental Data from Zillow
+```{r}
+NeighborhoodMedian <- read_csv("~/Downloads/Neighborhood_MedianRentalPrice_AllHomes.csv")
+NeighborhoodMedian%>%
+  filter(State=="CA")
+```
+8 thru 96
+```{r}
+zipcode
+```
+
+```{r}
+zipcode1 <- read_csv("~/Downloads/Zip_Zri_AllHomesPlusMultifamily.csv")
+zipcode<-zipcode1%>%
+  filter(State=="CA")%>%
+  gather(key="time", value="medianrent", 8:95, convert=TRUE)%>%
+  select("RegionName", "City", "State", "Metro", "CountyName", "time", "medianrent")%>%
+  mutate(date=parse_date(time, format="%Y-%m"))
+zipcode
+```
+
+```{r}
+desired=c(94704,94709,94703)
+zipcode%>%
+  filter(RegionName==desired)%>%
+  ggplot(mapping=aes(x=date, y=medianrent, color=RegionName)) + geom_line()
+```
+
+```{r}
+parse_date("2010-11", format="%Y-%m")
+```
+
+
