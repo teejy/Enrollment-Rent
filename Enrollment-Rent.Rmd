@@ -76,7 +76,6 @@ zipcode
 ```{r}
 zipcode1 <- read_csv("~/Downloads/Zip_Zri_AllHomesPlusMultifamily.csv")
 zipcode<-zipcode1%>%
-  filter(State=="CA")%>%
   gather(key="time", value="medianrent", 8:95, convert=TRUE)%>%
   select("RegionName", "City", "State", "Metro", "CountyName", "time", "medianrent")%>%
   mutate(date=parse_date(time, format="%Y-%m"))
@@ -84,14 +83,38 @@ zipcode
 ```
 
 ```{r}
-desired=c(94704,94709,94703)
+desired=c( "Berkeley")
 zipcode%>%
-  filter(RegionName==desired)%>%
+  filter(State=="CA")%>%
+  filter(City%in%desired)%>%
   ggplot(mapping=aes(x=date, y=medianrent, color=RegionName)) + geom_line()
 ```
 
 ```{r}
-parse_date("2010-11", format="%Y-%m")
+zipcodes=c(20816, 20895)
+zipcode%>%
+  filter(State=="MD")%>%
+  filter(RegionName%in%zipcodes)%>%
+  ggplot(mapping=aes(x=date, y=medianrent, color=RegionName)) + geom_line()
 ```
 
+Single Family Homes
+
+zipcode1 <- read_csv("~/Downloads/Zip_Zri_AllHomesPlusMultifamily.csv")
+zipcode<-zipcode1
+zipcode
+```{r}
+zipcodeSFR <- read_csv("~/Downloads/Zip_Zri_SingleFamilyResidenceRental.csv")%>%
+  gather(key="time", value="medianrent", 8:95, convert=TRUE)%>%
+  select("RegionName", "City", "State", "Metro", "CountyName", "time", "medianrent")%>%
+  mutate(date=parse_date(time, format="%Y-%m"))
+zipcodeSFR
+```
+
+```{r}
+zipcodeSFR%>%
+filter(State=="CA")%>%
+  filter(City%in%desired)%>%
+  ggplot(mapping=aes(x=date, y=medianrent, color=RegionName)) + geom_line()
+```
 
