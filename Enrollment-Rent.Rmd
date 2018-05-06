@@ -8,6 +8,12 @@ Four-year public colleges in response to decreases in per student expenditures h
 
 Berkeley California's estimated population is 121,240 according to the most recent United States census.
 
+Approaches for identifying a causal relationship:
+1) diff in diff with zipcodes with paralell trends to zipcodes closest to berkeley
+2) Comparing donuts around campus: does correlation with university enrollment follow a linear relationship with distance to campus
+3) Seasonality--Berkeley students a lot less present during the summer
+
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -91,9 +97,8 @@ zipcode%>%
 ```
 
 ```{r}
-zipcodes=c(20816, 20895)
+zipcodes=c(94530, 94704, 94709, 94114)
 zipcode%>%
-  filter(State=="MD")%>%
   filter(RegionName%in%zipcodes)%>%
   ggplot(mapping=aes(x=date, y=medianrent, color=RegionName)) + geom_line()
 ```
