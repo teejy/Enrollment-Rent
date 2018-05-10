@@ -47,7 +47,7 @@ df
 Graph of total enrollment
 ```{r}
 df%>%
-  ggplot(aes(x=`Year (Fall)`,y=`Total Enrollment (with grads)`))+geom_line()
+  ggplot(aes(x=`Year (Fall)`,y=`Total Enrollment Undergrad`))+geom_line()
 ```
 
 Graph of Number of Students living off campus
@@ -89,7 +89,7 @@ zipcode
 ```
 
 ```{r}
-desired=c( "Berkeley")
+desired=c( "Berkeley", "Oakland")
 zipcode%>%
   filter(State=="CA")%>%
   filter(City%in%desired)%>%
