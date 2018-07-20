@@ -1,6 +1,6 @@
 ---
-title: "Housing Project"
-output: html_document
+title: "Housing Project (Rents)"
+output: pdf
 ---
 Research Motivation: 
 
@@ -76,7 +76,7 @@ NeighborhoodMedian%>%
 ```
 8 thru 96
 ```{r}
-zipcode
+zipcode1
 ```
 
 ```{r}
@@ -89,18 +89,23 @@ zipcode
 ```
 
 ```{r}
-desired=c( "Berkeley", "Oakland")
+desired=c(94704, 94530)
 zipcode%>%
   filter(State=="CA")%>%
-  filter(City%in%desired)%>%
-  ggplot(mapping=aes(x=date, y=medianrent, color=RegionName)) + geom_line()
+  select(RegionName, date, medianrent)%>%
+  filter(RegionName %in% desired)%>%
+  spread(RegionName, medianrent)%>%
+  mutate(`94704`= log(`94704`))%>%
+  mutate(`94530`= log(`94530`))%>%
+  mutate(diff=`94704` - `94530`)%>%
+  ggplot(mapping=aes(x= date, y=diff)) + geom_line()
 ```
 
 ```{r}
-zipcodes=c(94530, 94704, 94709, 94114)
-zipcode%>%
-  filter(RegionName%in%zipcodes)%>%
-  ggplot(mapping=aes(x=date, y=medianrent, color=RegionName)) + geom_line()
+zipcodes=c(94704)
+Berkeleyzips<-zipcode%>%
+  filter(RegionName%in%zipcodes)
+Berkeleyzips
 ```
 
 Single Family Homes

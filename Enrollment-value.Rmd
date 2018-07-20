@@ -1,0 +1,91 @@
+---
+title: "Housing Value"
+output: pdf
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)    #our old friend
+library(ggplot2)
+library(reshape)
+library(lubridate)
+```
+
+```{r}
+library(readxl)
+enrollment <- read_excel("~/Documents/Berkeley/Senior Research Project/Berkeley Enrollment Data and Houing.xlsx")
+enrollment<-enrollment%>%
+  filter(`Year (Fall)`>=1999)
+
+enrollment%>%
+  ggplot(aes(x=`Year (Fall)`,y=`Total Enrollment Undergrad`))+geom_line()
+  
+```
+
+```{r}
+ZipcodeAllMedian <- read_csv("~/Downloads/Zip_Zhvi_AllHomes (1).csv")  #Zillow
+gathZipcodeAllMedian<-ZipcodeAllMedian%>%
+  gather(key="time", value="medianvalue", 8:272, convert=TRUE)%>%
+  select("RegionName", "City", "State", "Metro", "CountyName", "time", "medianvalue")%>%
+  mutate(date=parse_date(time, format="%Y-%m"))
+gathZipcodeAllMedian
+```
+
+```{r}
+desired=c(94704, 94530, 94609)
+gathZipcodeAllMedian%>%
+  filter(State=="CA")%>%
+  filter(City%in%c("Berkeley", "Oakland", "El Cerrito"))%>%
+  ggplot(mapping=aes(x=date, y=medianvalue, color=RegionName)) + geom_line()
+  
+```
+This is a table of East Bay Zipcodes and their median home values with zipcodes as the column names.
+```{r}
+  spreadzips<-gathZipcodeAllMedian%>%
+  filter(State=="CA")%>%
+  filter(City %in% c("Berkeley", "Oakland", "El Cerrito"))%>%
+  select(RegionName, date, medianvalue)%>%
+  spread(RegionName, medianvalue)
+spreadzips
+
+```
+Spreadzips but with differences to 94704
+
+Attempt at writing a forloop that failed
+```{r}
+for (i in 2:nrow(spreadzips)) {
+  diff<-spreadzips[i]-spreadzips[19]
+mutate}
+diffspreadzips
+```
+function that takes the diff between 94704 and chosen zipcode
+```{r}
+diff <- function (zipcode){
+  zipcodediff<-spreadzips$`94704` - spreadzips$`zipcode`
+return(zipcodediff)} 
+```
+
+```{r}
+<-spreadzips%>%
+  mutate()
+
+```
+
+```{r}
+
+
+%>%
+  mutate(`94704`=log(`94704`))%>%
+  mutate(`94530`=log(`94530`))%>%
+  mutate(`94609`=log(`94609`))%>%
+  mutate(diff94530 =`94704` - `94530`)%>%
+  mutate(diff94609 =`94704` - `94609`)%>%
+  ggplot(aes(date)) + 
+  geom_line(aes(y = diff94530, colour = "94530")) + 
+  geom_line(aes(y = diff94609, colour = "94609"))
+```
+
