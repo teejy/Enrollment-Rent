@@ -56,28 +56,26 @@ spreadzips
 Spreadzips but with differences to 94704
 
 Attempt at writing a forloop that failed
-```{r}
+#```{r}
 for (i in 2:nrow(spreadzips)) {
   diff<-spreadzips[i]-spreadzips[19]
 mutate}
 diffspreadzips
 ```
 function that takes the diff between 94704 and chosen zipcode
-```{r}
+#```{r}
 diff <- function (zipcode){
   zipcodediff<-spreadzips$`94704` - spreadzips$`zipcode`
 return(zipcodediff)} 
 ```
 
-```{r}
+#```{r}
 <-spreadzips%>%
   mutate()
 
 ```
 
-```{r}
-
-
+#```{r}
 %>%
   mutate(`94704`=log(`94704`))%>%
   mutate(`94530`=log(`94530`))%>%
@@ -87,5 +85,34 @@ return(zipcodediff)}
   ggplot(aes(date)) + 
   geom_line(aes(y = diff94530, colour = "94530")) + 
   geom_line(aes(y = diff94609, colour = "94609"))
+```
+
+Moving values to differences compared to 94704:
+first select 94704 values vector 
+```{r}
+southside<-spreadzips$`94704`
+southside
+```
+
+remove dates from values matrix so there are just integers
+```{r}
+nodates<-spreadzips%>%
+  select(-date)
+nodates
+```
+Simple matrix subtraction and readding the dates column (in the appropriate place)
+```{r}
+basicdiff<-nodates-southside
+valuediffs<-basicdiff%>%
+  merge(spreadzips$date)%>%
+  mutate(date=y)%>%
+  select(date, everything())
+valuediffs
+```
+
+Graph it!
+```{r}
+valuediffs%>%
+  ggplot(mapping=aes(x=date) +
 ```
 
